@@ -1,0 +1,11 @@
+<form method="POST" action="/login">
+  <label>Email</label>
+  <input type="email" name="email" required />
+  <label>Password</label>
+  <input type="password" name="password" required />
+  <% if (error) { %>
+    <div class="error"><%= error %></div>
+  <% } %>
+  <button type="submit">Login</button>
+</form>
+<p>Don't have account? <a href="/register">Register</a></p>

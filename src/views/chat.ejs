@@ -1,0 +1,37 @@
+<div id="chat">
+  <ul id="messages"></ul>
+  <form id="messageForm" autocomplete="off">
+    <input id="msgInput" placeholder="Type your message..." required />
+    <button type="submit">Send</button>
+  </form>
+</div>
+
+<script src="/socket.io/socket.io.js"></script>
+<script>
+  const socket = io();
+  const userName = '<%= userName %>';
+
+  const messagesEl = document.getElementById('messages');
+  const form = document.getElementById('messageForm');
+  const input = document.getElementById('msgInput');
+
+  function appendMessage(msg) {
+    const li = document.createElement('li');
+    li.className = msg.user === userName ? 'own' : 'other';
+    li.innerHTML = `<span class="username">${msg.user}</span><span class="text">${msg.text}</span>`;
+    messagesEl.appendChild(li);
+    messagesEl.scrollTop = messagesEl.scrollHeight;
+  }
+
+  socket.on('chat:message', (msg) => {
+    appendMessage(msg);
+  });
+
+  form.addEventListener('submit', (e) => {
+    e.preventDefault();
+    const text = input.value.trim();
+    if (!text) return;
+    socket.emit('chat:message', { user: userName, text });
+    input.value = '';
+  });
+</script>
